@@ -145,7 +145,22 @@ cython_debug/
 
 # PyPI config
 .pypirc
+<<<<<<< HEAD
 
 # --- Personalizzazioni ---
 # Ignora la cartella uploads (se vuoi evitare di caricare file caricati dall'utente)
+=======
+
+# --- Personalizzazioni dall'altra parte del conflitto ---
+
+# Ignora l'ambiente virtuale
+venv/
+.venv/
+
+# Ignora i file di backup di alcuni editor
+*.pyc
+__pycache__/
+
+# Ignora la cartella uploads (se vuoi evitar di caricare file caricati dall'utente)
+>>>>>>> 371065f (Risolto conflitto e unito .gitignore)
 uploads/
