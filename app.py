@@ -1,5 +1,5 @@
 import os
-from flask import Flask, render_template, request, redirect, flash, send_file
+from flask import Flask, render_template, request, redirect, flash, send_file, session
 from werkzeug.utils import secure_filename
 import pandas as pd
 
@@ -15,11 +15,20 @@ ALLOWED_EXTENSIONS = {'xlsx', 'xls'}
 
 def allowed_file(filename):
     """Controlla l'estensione."""
-    return '.' in filename and filename.rsplit('.',1)[1].lower() in ALLOWED_EXTENSIONS
+    return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
+    # Per test, forziamo session['has_paid'] a False se non è già impostato
+    if 'has_paid' not in session:
+        session['has_paid'] = False
+
     if request.method == 'POST':
+        # Se l'utente non ha pagato, non deve poter inviare il form
+        if not session.get('has_paid'):
+            flash("Devi completare il pagamento per utilizzare l'applicazione.")
+            return redirect(request.url)
+
         # 1. Recupera i due file
         file1 = request.files.get('file1')
         file2 = request.files.get('file2')
@@ -72,22 +81,20 @@ def index():
         # 5. Determina il numero massimo di righe
         max_rows = max(len(df1), len(df2))
 
-        # Creiamo un nuovo DataFrame di confronto
-        # con 3 colonne: "valore_file1", "valore_file2", "Match"
-        confronto = pd.DataFrame(columns=['valore_file1','valore_file2','Match'])
+        # Creiamo un nuovo DataFrame di confronto con 3 colonne: "valore_file1", "valore_file2", "Match"
+        confronto = pd.DataFrame(columns=['valore_file1', 'valore_file2', 'Match'])
 
         for i in range(max_rows):
             if i < len(df1) and col1_idx < df1.shape[1]:
                 val1 = df1.iloc[i, col1_idx]
             else:
-                val1 = float('nan')  # riga o colonna non esistente
+                val1 = float('nan')
 
             if i < len(df2) and col2_idx < df2.shape[1]:
                 val2 = df2.iloc[i, col2_idx]
             else:
                 val2 = float('nan')
 
-            # Normalizziamo per confrontare ignorando spazi / maiuscole
             s1 = str(val1).strip().lower() if pd.notna(val1) else None
             s2 = str(val2).strip().lower() if pd.notna(val2) else None
 
@@ -101,20 +108,10 @@ def index():
         # 6. Salviamo il risultato
         output_path = os.path.join(UPLOAD_FOLDER, "confronto_result.xlsx")
         confronto.to_excel(output_path, index=False)
-
         return send_file(output_path, as_attachment=True)
 
-<<<<<<< HEAD
-    # GET
+    # GET: Se l'utente non ha pagato, mostra il pulsante di acquisto; altrimenti, mostra il form
     return render_template('index.html')
-
-=======
-    # GET: Mostra il form di upload
-    return render_template('index.html')
-
-# ------------------------
-# Pagine statiche per Privacy, Terms, Refund
-# ------------------------
 
 @app.route('/privacy')
 def privacy():
@@ -128,6 +125,5 @@ def terms():
 def refund():
     return render_template('refund.html')
 
->>>>>>> 56dee81 (Aggiornato index.html con check di pagamento e checkout Paddle)
 if __name__ == '__main__':
     app.run(debug=True)
