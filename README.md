@@ -15,7 +15,5 @@ Findnmatch è un progetto Flask per confrontare due file Excel selezionando le c
 ## Licenza
 
 Questo progetto è rilasciato sotto licenza [MIT](./LICENSE).  
-<<<<<<< HEAD
 © 2025 Alessandro Pezzali
-=======
-© 2025 Alessandro Pezzali
+
