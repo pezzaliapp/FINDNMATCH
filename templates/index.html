@@ -1,0 +1,39 @@
+<!DOCTYPE html>
+<html lang="it">
+<head>
+    <meta charset="UTF-8">
+    <title>Confronto Colonne (Row by Row)</title>
+</head>
+<body>
+    <h1>Confronto tra due colonne di due file Excel</h1>
+    <p>Seleziona i due file e indica quale colonna (numero) confrontare in ciascun file.</p>
+
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul style="color:red">
+        {% for m in messages %}
+          <li>{{ m }}</li>
+        {% endfor %}
+      </ul>
+    {% endif %}
+    {% endwith %}
+
+    <form method="POST" enctype="multipart/form-data">
+        <p>
+            <label>File 1:</label><br>
+            <input type="file" name="file1" accept=".xlsx,.xls" required><br>
+            <label>Colonna (numero):</label>
+            <input type="text" name="col1" placeholder="Es. 2" required>
+        </p>
+
+        <p>
+            <label>File 2:</label><br>
+            <input type="file" name="file2" accept=".xlsx,.xls" required><br>
+            <label>Colonna (numero):</label>
+            <input type="text" name="col2" placeholder="Es. 3" required>
+        </p>
+
+        <button type="submit">Confronta</button>
+    </form>
+</body>
+</html>
