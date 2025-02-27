@@ -19,7 +19,7 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    # Per test, se 'has_paid' non è definito, impostalo a False
+    # Se 'has_paid' non è definito, impostalo a False (per test)
     if 'has_paid' not in session:
         session['has_paid'] = False
 
@@ -35,7 +35,6 @@ def index():
         col1_str = request.form.get('col1', '').strip()
         col2_str = request.form.get('col2', '').strip()
 
-        # Validazioni di base
         if not file1 or not file2 or file1.filename == '' or file2.filename == '':
             flash("Seleziona entrambi i file Excel.")
             return redirect(request.url)
@@ -70,21 +69,30 @@ def index():
             flash(f"Errore nella lettura dei file Excel: {e}")
             return redirect(request.url)
 
-        max_rows = max(len(df1), len(df2))
-        confronto = pd.DataFrame(columns=['valore_file1', 'valore_file2', 'Match'])
-        for i in range(max_rows):
-            if i < len(df1) and col1_idx < df1.shape[1]:
-                val1 = df1.iloc[i, col1_idx]
+        # Nuova logica di confronto:
+        # Per ogni valore nella colonna scelta in df1, cerca corrispondenze nella colonna scelta in df2, indipendentemente dalla riga.
+        confronto = pd.DataFrame(columns=['Row_file1', 'Value_file1', 'Matching_Rows_in_file2', 'Match'])
+        for idx, val in df1.iloc[:, col1_idx].iteritems():
+            # Converti il valore in stringa normalizzata (lowercase e senza spazi)
+            val_str = str(val).strip().lower() if pd.notna(val) else ""
+            # Cerca corrispondenze nella colonna di df2
+            matching_rows = df2.iloc[:, col2_idx].apply(lambda x: str(x).strip().lower() if pd.notna(x) else "").eq(val_str)
+            # Estrai gli indici dove la condizione è vera
+            matched_indices = matching_rows[matching_rows].index.tolist()
+            # Converti in numeri di riga 1-based
+            if matched_indices:
+                match = "YES"
+                matched_rows_str = ", ".join(str(i + 1) for i in matched_indices)
             else:
-                val1 = float('nan')
-            if i < len(df2) and col2_idx < df2.shape[1]:
-                val2 = df2.iloc[i, col2_idx]
-            else:
-                val2 = float('nan')
-            s1 = str(val1).strip().lower() if pd.notna(val1) else None
-            s2 = str(val2).strip().lower() if pd.notna(val2) else None
-            match = "YES" if (s1 is not None and s2 is not None and s1 == s2) else "NO"
-            confronto.loc[i] = [val1, val2, match]
+                match = "NO"
+                matched_rows_str = ""
+            confronto = confronto.append({
+                "Row_file1": idx + 1,
+                "Value_file1": val,
+                "Matching_Rows_in_file2": matched_rows_str,
+                "Match": match
+            }, ignore_index=True)
+        
         output_path = os.path.join(UPLOAD_FOLDER, "confronto_result.xlsx")
         confronto.to_excel(output_path, index=False)
         return send_file(output_path, as_attachment=True)
