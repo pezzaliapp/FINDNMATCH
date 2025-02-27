@@ -84,7 +84,7 @@ def index():
         col1_values = df1.iloc[:, col1_idx]
         col2_values = df2.iloc[:, col2_idx]
 
-        for idx, val in col1_values.items():  # <-- items() al posto di iteritems()
+        for idx, val in col1_values.items():  # items() al posto di iteritems()
             val_str = str(val).strip().lower() if pd.notna(val) else ""
             matching_rows = col2_values.apply(lambda x: str(x).strip().lower() if pd.notna(x) else "").eq(val_str)
             matched_indices = matching_rows[matching_rows].index.tolist()

@@ -19,6 +19,15 @@
     {% if not session.has_paid %}
         <h2>Pagamento Richiesto</h2>
         <p>Per utilizzare l'applicazione, devi completare il pagamento.</p>
+
+        <!-- Sezione con lo screenshot esplicativo -->
+        <h3>Come funziona Findnmatch?</h3>
+        <img src="/static/findnmatch_screenshot.png" alt="Screenshot Findnmatch" style="max-width: 600px;">
+        <p>
+            Ecco un esempio di come appare la schermata di caricamento file:
+            potrai caricare due file Excel e confrontare le colonne che preferisci.
+        </p>
+
         <button id="paddle-checkout">Acquista ora</button>
 
         <!-- Script di Paddle -->
