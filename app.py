@@ -19,22 +19,23 @@ def allowed_file(filename):
 
 @app.route('/', methods=['GET', 'POST'])
 def index():
-    # Se 'has_paid' non è impostato, impostalo a False per testare la logica di pagamento.
+    # Per test, se 'has_paid' non è definito, impostalo a False
     if 'has_paid' not in session:
         session['has_paid'] = False
 
     if request.method == 'POST':
-        # Se l'utente non ha pagato, blocca il submit
+        # Se l'utente non ha completato il pagamento, blocca l'invio
         if not session.get('has_paid'):
             flash("Devi completare il pagamento per utilizzare l'applicazione.")
             return redirect(request.url)
         
-        # Recupera i file e le colonne
+        # Recupera i file e le colonne da confrontare
         file1 = request.files.get('file1')
         file2 = request.files.get('file2')
         col1_str = request.form.get('col1', '').strip()
         col2_str = request.form.get('col2', '').strip()
 
+        # Validazioni di base
         if not file1 or not file2 or file1.filename == '' or file2.filename == '':
             flash("Seleziona entrambi i file Excel.")
             return redirect(request.url)
@@ -72,8 +73,14 @@ def index():
         max_rows = max(len(df1), len(df2))
         confronto = pd.DataFrame(columns=['valore_file1', 'valore_file2', 'Match'])
         for i in range(max_rows):
-            val1 = df1.iloc[i, col1_idx] if (i < len(df1) and col1_idx < df1.shape[1]) else float('nan')
-            val2 = df2.iloc[i, col2_idx] if (i < len(df2) and col2_idx < df2.shape[1]) else float('nan')
+            if i < len(df1) and col1_idx < df1.shape[1]:
+                val1 = df1.iloc[i, col1_idx]
+            else:
+                val1 = float('nan')
+            if i < len(df2) and col2_idx < df2.shape[1]:
+                val2 = df2.iloc[i, col2_idx]
+            else:
+                val2 = float('nan')
             s1 = str(val1).strip().lower() if pd.notna(val1) else None
             s2 = str(val2).strip().lower() if pd.notna(val2) else None
             match = "YES" if (s1 is not None and s2 is not None and s1 == s2) else "NO"
@@ -100,6 +107,11 @@ def refund():
 @app.route('/set_paid')
 def set_paid():
     session['has_paid'] = True
+    return redirect(url_for('index'))
+
+@app.route('/set_unpaid')
+def set_unpaid():
+    session['has_paid'] = False
     return redirect(url_for('index'))
 
 if __name__ == '__main__':
