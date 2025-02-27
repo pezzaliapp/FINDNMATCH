@@ -24,9 +24,9 @@
         <!-- Script di Paddle -->
         <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
         <script>
-            // Imposta il Vendor ID (Seller ID)
+            // Imposta il Seller ID (Vendor ID)
             Paddle.Setup({ vendor: 217642 });
-            // Al clic, apri il checkout Paddle con Product ID e custom logo
+            // Al clic, apri il checkout Paddle
             document.getElementById("paddle-checkout").addEventListener("click", function() {
                 Paddle.Checkout.open({
                     product: "pri_01jn38kpctxrvgjpdf4crheqzz",
@@ -55,14 +55,12 @@
                 <label>Colonna (numero):</label>
                 <input type="text" name="col1" placeholder="Es. 2" required>
             </p>
-
             <p>
                 <label>File 2:</label><br>
                 <input type="file" name="file2" accept=".xlsx,.xls" required><br>
                 <label>Colonna (numero):</label>
                 <input type="text" name="col2" placeholder="Es. 3" required>
             </p>
-
             <button type="submit">Confronta</button>
         </form>
     {% endif %}
