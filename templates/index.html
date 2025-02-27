@@ -1,72 +1,82 @@
 <!DOCTYPE html>
 <html lang="it">
 <head>
-    <meta charset="UTF-8">
-    <title>Confronto Colonne (Row by Row) - Pagamento Richiesto</title>
+  <meta charset="UTF-8">
+  <title>Findnmatch - Confronta TABELLE Excel</title>
+  <style>
+    body { font-family: Arial, sans-serif; margin: 20px; }
+    header { border-bottom: 1px solid #ccc; margin-bottom: 20px; padding-bottom: 10px; }
+    nav a { margin-right: 10px; }
+    .product-info { margin-bottom: 20px; }
+  </style>
 </head>
 <body>
-    <header>
-        <nav>
-            <a href="/privacy">Privacy Policy</a> |
-            <a href="/terms">Termini di Servizio</a> |
-            <a href="/refund">Refund Policy</a>
-        </nav>
-    </header>
-    
-    {% if not session.has_paid %}
-        <h1>Pagamento Richiesto</h1>
-        <p>Per utilizzare l'applicazione, devi completare il pagamento.</p>
-        <button id="paddle-checkout">Acquista ora</button>
-
-        <!-- Script di Paddle -->
-        <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
-        <script>
-            // Imposta il Vendor ID con il Seller ID reale
-            Paddle.Setup({ vendor: 217642 });
-            // Imposta il Product ID reale
-            document.getElementById("paddle-checkout").addEventListener("click", function() {
-                Paddle.Checkout.open({
-                    product: "pri_01jn38kpctxrvgjpdf4crheqzz",
-                    custom_logo: "https://findnmatch.onrender.com/static/FINDNMATCH.png"
-                });
-            });
-        </script>
-        <p>
-            <a href="/privacy">Privacy Policy</a> | 
-            <a href="/terms">Termini di Servizio</a> | 
-            <a href="/refund">Refund Policy</a>
-        </p>
-    {% else %}
-        <h1>Confronto tra due colonne di due file Excel</h1>
-        <p>Seleziona i due file e indica quale colonna (numero) confrontare in ciascun file.</p>
-
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul style="color:red">
-                {% for m in messages %}
-                    <li>{{ m }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-        {% endwith %}
-
-        <form method="POST" enctype="multipart/form-data">
-            <p>
-                <label>File 1:</label><br>
-                <input type="file" name="file1" accept=".xlsx,.xls" required><br>
-                <label>Colonna (numero):</label>
-                <input type="text" name="col1" placeholder="Es. 2" required>
-            </p>
-
-            <p>
-                <label>File 2:</label><br>
-                <input type="file" name="file2" accept=".xlsx,.xls" required><br>
-                <label>Colonna (numero):</label>
-                <input type="text" name="col2" placeholder="Es. 3" required>
-            </p>
-
-            <button type="submit">Confronta</button>
-        </form>
-    {% endif %}
+  <header>
+    <h1>Findnmatch</h1>
+    <p class="product-info">
+      Confronta tabelle Excel per trovare corrispondenze esatte e incongruenze.
+      <br>
+      <strong>Prezzo:</strong> 9,99 USD / 9,99 EUR per licenza singola.
+    </p>
+    <nav>
+      <a href="/privacy">Privacy Policy</a> |
+      <a href="/terms">Termini di Servizio</a> |
+      <a href="/refund">Refund Policy</a>
+    </nav>
+  </header>
+  
+  {% if not session.has_paid %}
+      <h2>Pagamento Richiesto</h2>
+      <p>Per utilizzare l'applicazione, devi completare il pagamento.</p>
+      <button id="paddle-checkout">Acquista ora</button>
+      
+      <!-- Script di Paddle -->
+      <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
+      <script>
+          // Imposta il Vendor ID con il Seller ID reale fornito da Paddle
+          Paddle.Setup({ vendor: 217642 });
+          // Al clic, apri il checkout Paddle con il Product ID reale e l'icona
+          document.getElementById("paddle-checkout").addEventListener("click", function() {
+              Paddle.Checkout.open({
+                  product: "pri_01jn38kpctxrvgjpdf4crheqzz",
+                  custom_logo: "https://findnmatch.onrender.com/static/FINDNMATCH.png"
+              });
+          });
+      </script>
+      <p>
+        <a href="/privacy">Privacy Policy</a> | 
+        <a href="/terms">Termini di Servizio</a> | 
+        <a href="/refund">Refund Policy</a>
+      </p>
+  {% else %}
+      <h2>Confronta Tabelle Excel</h2>
+      <p>Carica i file Excel e specifica la colonna (numero) da confrontare in ciascun file.</p>
+      
+      {% with messages = get_flashed_messages() %}
+      {% if messages %}
+          <ul style="color:red">
+              {% for m in messages %}
+                  <li>{{ m }}</li>
+              {% endfor %}
+          </ul>
+      {% endif %}
+      {% endwith %}
+      
+      <form method="POST" enctype="multipart/form-data">
+          <p>
+              <label>File 1:</label><br>
+              <input type="file" name="file1" accept=".xlsx,.xls" required><br>
+              <label>Colonna (numero):</label>
+              <input type="text" name="col1" placeholder="Es. 2" required>
+          </p>
+          <p>
+              <label>File 2:</label><br>
+              <input type="file" name="file2" accept=".xlsx,.xls" required><br>
+              <label>Colonna (numero):</label>
+              <input type="text" name="col2" placeholder="Es. 3" required>
+          </p>
+          <button type="submit">Confronta</button>
+      </form>
+  {% endif %}
 </body>
 </html>
