@@ -5,26 +5,17 @@
     <title>Findnmatch - Confronta TABELLE Excel</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
-        header { border-bottom: 1px solid #ccc; margin-bottom: 20px; padding-bottom: 10px; }
-        nav a { margin-right: 10px; }
         .product-info { margin-bottom: 20px; }
         footer { margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px; }
     </style>
 </head>
 <body>
-    <header>
-        <h1>Findnmatch</h1>
-        <p class="product-info">
-            Confronta tabelle Excel per trovare corrispondenze e incongruenze.<br>
-            <strong>Prezzo:</strong> 9,99 USD / 9,99 EUR per licenza singola.
-        </p>
-        <nav>
-            <a href="/privacy">Privacy Policy</a> |
-            <a href="/terms">Termini di Servizio</a> |
-            <a href="/refund">Refund Policy</a>
-        </nav>
-    </header>
-    
+    <h1>Findnmatch</h1>
+    <p class="product-info">
+      Confronta tabelle Excel per trovare corrispondenze esatte e incongruenze.<br>
+      <strong>Prezzo:</strong> 9,99 USD / 9,99 EUR per licenza singola.
+    </p>
+
     {% if not session.has_paid %}
         <h2>Pagamento Richiesto</h2>
         <p>Per utilizzare l'applicazione, devi completare il pagamento.</p>
@@ -33,8 +24,9 @@
         <!-- Script di Paddle -->
         <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
         <script>
-            // Imposta il Seller ID (Vendor ID)
+            // Imposta il Vendor ID (Seller ID)
             Paddle.Setup({ vendor: 217642 });
+            // Al clic, apri il checkout Paddle con Product ID e custom logo
             document.getElementById("paddle-checkout").addEventListener("click", function() {
                 Paddle.Checkout.open({
                     product: "pri_01jn38kpctxrvgjpdf4crheqzz",
@@ -74,13 +66,13 @@
             <button type="submit">Confronta</button>
         </form>
     {% endif %}
-    
+
     <footer>
-      <p>
-          <a href="/privacy">Privacy Policy</a> | 
-          <a href="/terms">Termini di Servizio</a> | 
-          <a href="/refund">Refund Policy</a>
-      </p>
+        <p>
+            <a href="/privacy">Privacy Policy</a> | 
+            <a href="/terms">Termini di Servizio</a> | 
+            <a href="/refund">Refund Policy</a>
+        </p>
     </footer>
 </body>
 </html>
