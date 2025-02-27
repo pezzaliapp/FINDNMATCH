@@ -5,6 +5,14 @@
     <title>Confronto Colonne (Row by Row) - Pagamento Richiesto</title>
 </head>
 <body>
+    <header>
+        <nav>
+            <a href="/privacy">Privacy Policy</a> |
+            <a href="/terms">Termini di Servizio</a> |
+            <a href="/refund">Refund Policy</a>
+        </nav>
+    </header>
+    
     {% if not session.has_paid %}
         <h1>Pagamento Richiesto</h1>
         <p>Per utilizzare l'applicazione, devi completare il pagamento.</p>
@@ -13,13 +21,21 @@
         <!-- Script di Paddle -->
         <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
         <script>
-            // Sostituisci con il tuo Vendor ID fornito da Paddle
-            Paddle.Setup({ vendor: YOUR_VENDOR_ID });
-            // Sostituisci con il tuo Product ID
+            // Imposta il Vendor ID con il Seller ID reale
+            Paddle.Setup({ vendor: 217642 });
+            // Imposta il Product ID reale
             document.getElementById("paddle-checkout").addEventListener("click", function() {
-                Paddle.Checkout.open({ product: YOUR_PRODUCT_ID });
+                Paddle.Checkout.open({
+                    product: "pri_01jn38kpctxrvgjpdf4crheqzz",
+                    custom_logo: "https://findnmatch.onrender.com/static/FINDNMATCH.png"
+                });
             });
         </script>
+        <p>
+            <a href="/privacy">Privacy Policy</a> | 
+            <a href="/terms">Termini di Servizio</a> | 
+            <a href="/refund">Refund Policy</a>
+        </p>
     {% else %}
         <h1>Confronto tra due colonne di due file Excel</h1>
         <p>Seleziona i due file e indica quale colonna (numero) confrontare in ciascun file.</p>
