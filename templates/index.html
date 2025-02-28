@@ -2,84 +2,44 @@
 <html lang="it">
 <head>
     <meta charset="UTF-8">
-    <title>Findnmatch - Confronta TABELLE Excel</title>
+    <title>Findnmatch - Confronta Tabelle Excel</title>
     <style>
         body { font-family: Arial, sans-serif; margin: 20px; }
-        .product-info { margin-bottom: 20px; }
-        footer { margin-top: 40px; border-top: 1px solid #ccc; padding-top: 10px; }
     </style>
 </head>
 <body>
     <h1>Findnmatch</h1>
-    <p class="product-info">
-      Confronta tabelle Excel per trovare corrispondenze esatte e incongruenze.<br>
-      <strong>Prezzo:</strong> 9,99 USD / 9,99 EUR per licenza singola.
+    <p>
+      Confronta tabelle Excel per trovare corrispondenze esatte e discrepanze.
+    </p>
+    <p>
+      Carica i file Excel e specifica la colonna (numero) da confrontare in ciascun file.
     </p>
 
-    {% if not session.has_paid %}
-        <h2>Pagamento Richiesto</h2>
-        <p>Per utilizzare l'applicazione, devi completare il pagamento.</p>
-
-        <!-- Sezione con lo screenshot esplicativo -->
-        <h3>Come funziona Findnmatch?</h3>
-        <img src="/static/findnmatch_screenshot.png" alt="Screenshot Findnmatch" style="max-width: 600px;">
-        <p>
-            Ecco un esempio di come appare la schermata di caricamento file:
-            potrai caricare due file Excel e confrontare le colonne che preferisci.
-        </p>
-
-        <button id="paddle-checkout">Acquista ora</button>
-
-        <!-- Script di Paddle -->
-        <script src="https://cdn.paddle.com/paddle/paddle.js"></script>
-        <script>
-            // Imposta il Seller ID (Vendor ID)
-            Paddle.Setup({ vendor: 217642 });
-            // Al clic, apri il checkout Paddle
-            document.getElementById("paddle-checkout").addEventListener("click", function() {
-                Paddle.Checkout.open({
-                    product: "pri_01jn38kpctxrvgjpdf4crheqzz",
-                    custom_logo: "https://findnmatch.onrender.com/static/FINDNMATCH.png"
-                });
-            });
-        </script>
-    {% else %}
-        <h2>Confronta Tabelle Excel</h2>
-        <p>Carica i file Excel e specifica la colonna (numero) da confrontare in ciascun file.</p>
-
-        {% with messages = get_flashed_messages() %}
-        {% if messages %}
-            <ul style="color:red">
-                {% for m in messages %}
-                    <li>{{ m }}</li>
-                {% endfor %}
-            </ul>
-        {% endif %}
-        {% endwith %}
-
-        <form method="POST" enctype="multipart/form-data">
-            <p>
-                <label>File 1:</label><br>
-                <input type="file" name="file1" accept=".xlsx,.xls" required><br>
-                <label>Colonna (numero):</label>
-                <input type="text" name="col1" placeholder="Es. 2" required>
-            </p>
-            <p>
-                <label>File 2:</label><br>
-                <input type="file" name="file2" accept=".xlsx,.xls" required><br>
-                <label>Colonna (numero):</label>
-                <input type="text" name="col2" placeholder="Es. 3" required>
-            </p>
-            <button type="submit">Confronta</button>
-        </form>
+    {% with messages = get_flashed_messages() %}
+    {% if messages %}
+      <ul style="color:red">
+        {% for m in messages %}
+          <li>{{ m }}</li>
+        {% endfor %}
+      </ul>
     {% endif %}
+    {% endwith %}
 
-    <footer>
+    <form method="POST" enctype="multipart/form-data">
         <p>
-            <a href="/privacy">Privacy Policy</a> | 
-            <a href="/terms">Termini di Servizio</a> | 
-            <a href="/refund">Refund Policy</a>
+            <label>File 1:</label><br>
+            <input type="file" name="file1" accept=".xlsx,.xls" required><br>
+            <label>Colonna (numero):</label>
+            <input type="text" name="col1" placeholder="Es. 2" required>
         </p>
-    </footer>
+        <p>
+            <label>File 2:</label><br>
+            <input type="file" name="file2" accept=".xlsx,.xls" required><br>
+            <label>Colonna (numero):</label>
+            <input type="text" name="col2" placeholder="Es. 3" required>
+        </p>
+        <button type="submit">Confronta</button>
+    </form>
 </body>
 </html>

@@ -1,11 +1,12 @@
 import os
-from flask import Flask, render_template, request, redirect, flash, send_file, session, url_for
+from flask import Flask, render_template, request, redirect, flash, send_file
 from werkzeug.utils import secure_filename
 import pandas as pd
 
 app = Flask(__name__)
 app.secret_key = 'super-secret-key'  # Cambia con una chiave sicura
 
+# Directory per salvare i file caricati e l'output
 BASE_DIR = os.path.dirname(os.path.abspath(__file__))
 UPLOAD_FOLDER = os.path.join(BASE_DIR, 'uploads')
 os.makedirs(UPLOAD_FOLDER, exist_ok=True)
@@ -16,24 +17,16 @@ def allowed_file(filename):
     """Controlla l'estensione del file."""
     return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-@app.route('/', methods=['GET','POST'])
+@app.route('/', methods=['GET', 'POST'])
 def index():
-    # Se non è definito, imposta session['has_paid'] = False (per test)
-    if 'has_paid' not in session:
-        session['has_paid'] = False
-
     if request.method == 'POST':
-        # Se l'utente non ha pagato, blocca l'upload
-        if not session.get('has_paid'):
-            flash("Devi completare il pagamento per utilizzare l'applicazione.")
-            return redirect(request.url)
-
+        # Recupera i file e le colonne da confrontare
         file1 = request.files.get('file1')
         file2 = request.files.get('file2')
         col1_str = request.form.get('col1', '').strip()
         col2_str = request.form.get('col2', '').strip()
 
-        # Controlli di base
+        # Validazioni di base
         if not file1 or not file2 or file1.filename == '' or file2.filename == '':
             flash("Seleziona entrambi i file Excel.")
             return redirect(request.url)
@@ -44,7 +37,6 @@ def index():
             flash("I file devono avere estensione .xlsx o .xls")
             return redirect(request.url)
 
-        # Converte i numeri di colonna da 1-based a 0-based
         try:
             col1_idx = int(col1_str) - 1
             col2_idx = int(col2_str) - 1
@@ -63,7 +55,7 @@ def index():
         file1.save(path1)
         file2.save(path2)
 
-        # Leggi i DataFrame
+        # Legge i DataFrame dai file Excel
         try:
             df1 = pd.read_excel(path1, engine='openpyxl')
             df2 = pd.read_excel(path2, engine='openpyxl')
@@ -71,7 +63,7 @@ def index():
             flash(f"Errore nella lettura dei file Excel: {e}")
             return redirect(request.url)
 
-        # Controlla che le colonne esistano
+        # Verifica che le colonne richieste esistano
         if col1_idx >= df1.shape[1]:
             flash(f"Il file {file1.filename} non ha la colonna {col1_idx + 1}")
             return redirect(request.url)
@@ -79,19 +71,19 @@ def index():
             flash(f"Il file {file2.filename} non ha la colonna {col2_idx + 1}")
             return redirect(request.url)
 
-        # Nuova logica: per ogni valore in df1, cerca corrispondenze nella colonna di df2
+        # Confronta i valori: per ogni valore in df1, cerca corrispondenze in df2 (in qualsiasi riga)
         rows = []
         col1_values = df1.iloc[:, col1_idx]
         col2_values = df2.iloc[:, col2_idx]
 
-        for idx, val in col1_values.items():  # items() al posto di iteritems()
+        for idx, val in col1_values.items():
             val_str = str(val).strip().lower() if pd.notna(val) else ""
             matching_rows = col2_values.apply(lambda x: str(x).strip().lower() if pd.notna(x) else "").eq(val_str)
             matched_indices = matching_rows[matching_rows].index.tolist()
 
             if matched_indices:
                 match = "YES"
-                matched_rows_str = ", ".join(str(i + 1) for i in matched_indices)  # Righe 1-based
+                matched_rows_str = ", ".join(str(i + 1) for i in matched_indices)
             else:
                 match = "NO"
                 matched_rows_str = ""
@@ -109,29 +101,6 @@ def index():
         return send_file(output_path, as_attachment=True)
 
     return render_template('index.html')
-
-@app.route('/privacy')
-def privacy():
-    return render_template('privacy.html')
-
-@app.route('/terms')
-def terms():
-    return render_template('terms.html')
-
-@app.route('/refund')
-def refund():
-    return render_template('refund.html')
-
-# Route di test per forzare il pagamento (da rimuovere in produzione)
-@app.route('/set_paid')
-def set_paid():
-    session['has_paid'] = True
-    return redirect(url_for('index'))
-
-@app.route('/set_unpaid')
-def set_unpaid():
-    session['has_paid'] = False
-    return redirect(url_for('index'))
 
 if __name__ == '__main__':
     app.run(debug=True)
