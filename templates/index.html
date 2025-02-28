@@ -4,25 +4,53 @@
     <meta charset="UTF-8">
     <title>Findnmatch - Confronta Tabelle Excel</title>
     <style>
-        body { font-family: Arial, sans-serif; margin: 20px; }
+        body {
+            font-family: Arial, sans-serif;
+            margin: 20px;
+        }
+        header {
+            display: flex;
+            align-items: center;
+            margin-bottom: 20px;
+        }
+        header img {
+            width: 50px;
+            height: 50px;
+            margin-right: 15px;
+        }
+        .product-info {
+            margin-bottom: 20px;
+        }
+        hr {
+            border: 0;
+            border-top: 1px solid #ccc;
+            margin: 20px 0;
+        }
     </style>
 </head>
 <body>
-    <h1>Findnmatch</h1>
-    <p>
-      Confronta tabelle Excel per trovare corrispondenze esatte e discrepanze.
+    <header>
+        <img src="/static/FINDNMATCH.png" alt="Findnmatch Icon">
+        <h1>Findnmatch</h1>
+    </header>
+    
+    <p class="product-info">
+        Confronta tabelle Excel per trovare corrispondenze esatte e discrepanze.
     </p>
+    
+    <hr>
+    
     <p>
-      Carica i file Excel e specifica la colonna (numero) da confrontare in ciascun file.
+        Carica i file Excel e specifica la colonna (numero) da confrontare in ciascun file.
     </p>
-
+    
     {% with messages = get_flashed_messages() %}
     {% if messages %}
-      <ul style="color:red">
-        {% for m in messages %}
-          <li>{{ m }}</li>
-        {% endfor %}
-      </ul>
+        <ul style="color:red">
+            {% for m in messages %}
+                <li>{{ m }}</li>
+            {% endfor %}
+        </ul>
     {% endif %}
     {% endwith %}
 
