@@ -29,7 +29,7 @@ document.getElementById("compareButton").addEventListener("click", function() {
       const sheet2 = workbook2.Sheets[workbook2.SheetNames[0]];
       const dataArray2 = XLSX.utils.sheet_to_json(sheet2, { header: 1 });
 
-      // Estrae i valori dalle colonne selezionate
+      // Estrae i valori dalle colonne specificate
       const column1Values = dataArray1.map(row => row[col1]);
       const column2Values = dataArray2.map(row => row[col2]);
 
@@ -38,8 +38,6 @@ document.getElementById("compareButton").addEventListener("click", function() {
 
       if (matches.length > 0) {
         alert("Trovate " + matches.length + " corrispondenze!");
-
-        // Genera un file Excel con i valori trovati
         generateExcel(matches);
       } else {
         alert("Nessuna corrispondenza trovata.");
@@ -52,9 +50,8 @@ document.getElementById("compareButton").addEventListener("click", function() {
   reader1.readAsArrayBuffer(file1);
 });
 
-// Funzione per creare e scaricare un file Excel con i risultati
 function generateExcel(matches) {
-  // Creiamo una struttura di array di array, in cui ogni elemento è una riga
+  // Creiamo un array di array per il worksheet
   const wsData = [["Valori Corrispondenti"]];
 
   // Aggiungiamo ogni corrispondenza in una riga separata
@@ -62,13 +59,13 @@ function generateExcel(matches) {
     wsData.push([val]);
   });
 
-  // Creiamo un foglio di lavoro (worksheet) da questo array
+  // Creiamo un worksheet da questo array
   const ws = XLSX.utils.aoa_to_sheet(wsData);
 
-  // Creiamo un nuovo workbook e ci aggiungiamo il foglio
+  // Creiamo un nuovo workbook e aggiungiamo il worksheet
   const wb = XLSX.utils.book_new();
   XLSX.utils.book_append_sheet(wb, ws, "Corrispondenze");
 
-  // Salviamo il file Excel sul client
+  // Scarichiamo il file Excel
   XLSX.writeFile(wb, "confronto_result.xlsx");
 }
