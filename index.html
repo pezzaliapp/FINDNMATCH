@@ -6,7 +6,7 @@
   <title>Findnmatch - Confronto Excel</title>
   <link rel="stylesheet" href="style.css">
   <link rel="manifest" href="manifest.json">
-  <!-- Carichiamo la libreria XLSX -->
+  <!-- Libreria XLSX per leggere file Excel nel browser -->
   <script src="https://cdnjs.cloudflare.com/ajax/libs/xlsx/0.18.5/xlsx.full.min.js"></script>
 </head>
 <body>
@@ -15,7 +15,7 @@
     <h1>Findnmatch</h1>
   </header>
 
-  <p>Confronta tabelle Excel per trovare corrispondenze esatte e discrepanze.</p>
+  <p>Confronta tabelle Excel per trovare corrispondenze esatte e differenze.</p>
   <hr>
   <p>Carica i file Excel e specifica la colonna (numero) da confrontare in ciascun file.</p>
 
@@ -30,7 +30,10 @@
     <label>Colonna (numero):</label>
     <input type="number" name="col2" id="col2" placeholder="Es. 3" required><br><br>
 
-    <button type="button" id="compareButton">Confronta</button>
+    <!-- Pulsante per confrontare le corrispondenze -->
+    <button type="button" id="compareButton">Confronta corrispondenze</button>
+    <!-- Pulsante per confrontare le differenze -->
+    <button type="button" id="differenceButton">Confronta differenze</button>
   </div>
 
   <div id="result"></div>
