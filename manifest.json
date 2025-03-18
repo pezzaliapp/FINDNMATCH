@@ -1,0 +1,20 @@
+{
+    "name": "FINDNMATCH",
+    "short_name": "Findnmatch",
+    "start_url": "index.html",
+    "display": "standalone",
+    "background_color": "#ffffff",
+    "theme_color": "#4CAF50",
+    "icons": [
+        {
+            "src": "icon/findnmatch-192.png",
+            "sizes": "192x192",
+            "type": "image/png"
+        },
+        {
+            "src": "icon/findnmatch-512.png",
+            "sizes": "512x512",
+            "type": "image/png"
+        }
+    ]
+}
